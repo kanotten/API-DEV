@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fetch it eh?</title>
+    </head>
+    <body>
+        <h1>Try my sql</h1>
+
+        <!-- Input Form for POST Request -->
+        <form onsubmit="sendName(event)">
+            <label for="nameInput">Name:</label>
+            <input type="text" id="nameInput" required />
+            <button type="submit">Submit</button>
+        </form>
+
+        <button onclick="fetchMessages()">Fetch Messages</button>
+
+        <script>
+            // POST Request
+            async function sendName(event) {
+                event.preventDefault(); // Prevent the form from refreshing the page
+                const name = document.getElementById("nameInput").value;
+
+                const response = await fetch(
+                    "http://localhost:5000/api/message",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ name }),
+                    },
+                );
+
+                const result = await response.json();
+                alert(result.message);
+            }
+
+            // GET Request
+            async function fetchMessages() {
+                const response = await fetch(
+                    "http://localhost:5000/api/messages",
+                );
+                const messages = await response.json();
+                console.log(messages);
+            }
+        </script>
+    </body>
+</html>
