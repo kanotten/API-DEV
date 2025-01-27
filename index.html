@@ -17,10 +17,16 @@
 
         <button onclick="fetchMessages()">Fetch Messages</button>
 
+        <!-- Display Messages -->
+        <div id="messagesContainer">
+            <h2>Messages:</h2>
+            <ul id="messagesList"></ul>
+        </div>
+
         <script>
             // POST Request
             async function sendName(event) {
-                event.preventDefault(); // Prevent the form from refreshing the page
+                event.preventDefault();
                 const name = document.getElementById("nameInput").value;
 
                 const response = await fetch(
@@ -36,22 +42,26 @@
 
                 const result = await response.json();
                 alert(result.message);
+                document.getElementById("nameInput").value = "";
             }
 
-            // GET Request
             async function fetchMessages() {
                 const response = await fetch(
                     "http://localhost:5000/api/messages",
                 );
                 const messages = await response.json();
-                console.log(messages);
+
+                // Select the messages list
+                const messagesList = document.getElementById("messagesList");
+                messagesList.innerHTML = "";
+
+                // Add each message to the list
+                messages.forEach((msg) => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = msg.name;
+                    messagesList.appendChild(listItem);
+                });
             }
-
-            const path = require("path");
-
-            app.get("/", (req, res) => {
-                res.sendFile(path.join(__dirname, "index.html"));
-            });
         </script>
     </body>
 </html>
