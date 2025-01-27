@@ -46,6 +46,12 @@
                 const messages = await response.json();
                 console.log(messages);
             }
+
+            const path = require("path");
+
+            app.get("/", (req, res) => {
+                res.sendFile(path.join(__dirname, "index.html"));
+            });
         </script>
     </body>
 </html>
