@@ -1,27 +1,27 @@
 document
-  .getElementById("guestbookForm")
+  .getElementById("messageForm")
   .addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const username = document.getElementById("username").value;
+    const name = document.getElementById("name").value;
     const message = document.getElementById("message").value;
 
-    if (username && message) {
+    if (name && message) {
       try {
         const response = await fetch("/api/message", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: `${username}: ${message}` }),
+          body: JSON.stringify({ name: `${name}: ${message}` }),
         });
 
         const result = await response.json();
 
         if (response.ok) {
           alert(result.message);
-          document.getElementById("guestbookForm").reset(); // Clear the form
-          fetchMessages();
+          document.getElementById("messageForm").reset(); // Clear the form
+          fetchMessages(); // Refresh messages list
         } else {
           alert(result.message);
         }
@@ -30,7 +30,7 @@ document
         alert("Something went wrong. Please try again.");
       }
     } else {
-      alert("Both username and message are required.");
+      alert("Both name and message are required.");
     }
   });
 
@@ -51,3 +51,6 @@ async function fetchMessages() {
     console.error("Error fetching messages:", error);
   }
 }
+
+// Fetch messages on page load
+fetchMessages();
