@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const mongoose = require("mongoose"); // Import mongoose
+const mongoose = require("mongoose");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,8 +20,8 @@ db.once("open", () => {
 
 // Define Mongoose Schema and Model
 const messageSchema = new mongoose.Schema({
-  name: String,
-  message: String,
+  name: { type: String, required: true },
+  message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
 });
 
