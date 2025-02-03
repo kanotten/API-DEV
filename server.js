@@ -1,18 +1,30 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname)));
 
-app.get("/", (req, res) => {
-  res.send("Guestbook API is running!");
+const messages = [];
+
+app.post("/api/message", (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: "ursakta meg?" });
+  }
+
+  messages.push({ id: messages.length + 1, name });
+  res.status(201).json({ message: `Message from ${name} added!` });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.get("/api/messages", (req, res) => {
+  res.status(200).json(messages);
 });
+
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`),
+);
