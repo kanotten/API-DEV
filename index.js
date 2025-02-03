@@ -44,7 +44,7 @@ async function fetchMessages() {
 
     messages.forEach((msg) => {
       const li = document.createElement("li");
-      li.textContent = msg.name;
+      li.innerHTML = `<strong>${msg.name}</strong><br><small>${msg.timestamp}</small>`;
       messagesList.appendChild(li);
     });
   } catch (error) {
