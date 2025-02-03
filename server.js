@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// MongoDB connection
 const mongoURI = "mongodb://localhost:27017/guestbook";
 
 mongoose.connect(mongoURI);
@@ -27,12 +26,10 @@ const messageSchema = new mongoose.Schema({
 
 const Message = mongoose.model("Message", messageSchema);
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// POST route
 app.post("/api/message", async (req, res) => {
   const { name, message } = req.body;
   if (!name || !message) {
@@ -53,7 +50,6 @@ app.post("/api/message", async (req, res) => {
   }
 });
 
-// GET route
 app.get("/api/messages", async (req, res) => {
   try {
     const messages = await Message.find().sort({ timestamp: -1 });
@@ -64,7 +60,6 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// Start the server
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`),
 );

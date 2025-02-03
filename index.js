@@ -13,16 +13,17 @@ document
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: `${name}: ${message}` }),
+          body: JSON.stringify({ name, message }),
         });
 
         const result = await response.json();
 
         if (response.ok) {
           alert(result.message);
-          document.getElementById("messageForm").reset(); // Clear the form
-          fetchMessages(); // Refresh messages list
+          document.getElementById("messageForm").reset();
+          fetchMessages();
         } else {
+          console.error("POST Error:", result);
           alert(result.message);
         }
       } catch (error) {
@@ -39,18 +40,23 @@ async function fetchMessages() {
     const response = await fetch("/api/messages");
     const messages = await response.json();
 
+    console.log("Fetched messages:", messages);
+
     const messagesList = document.getElementById("messagesList");
     messagesList.innerHTML = "";
 
-    messages.forEach((msg) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${msg.name}</strong><br><small>${msg.timestamp}</small>`;
-      messagesList.appendChild(li);
-    });
+    if (Array.isArray(messages)) {
+      messages.forEach((msg) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${msg.name}</strong><br><small>${new Date(msg.timestamp).toLocaleString()}</small>`; // Format timestamp
+        messagesList.appendChild(li);
+      });
+    } else {
+      console.error("Expected an array, got:", messages);
+    }
   } catch (error) {
     console.error("Error fetching messages:", error);
   }
 }
 
-// Fetch messages on page load
 fetchMessages();
