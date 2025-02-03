@@ -9,10 +9,7 @@ const PORT = process.env.PORT || 5000;
 // MongoDB connection
 const mongoURI = "mongodb://localhost:27017/guestbook";
 
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoURI);
 
 const db = mongoose.connection;
 
@@ -21,36 +18,50 @@ db.once("open", () => {
   console.log("Connected to MongoDB!");
 });
 
+// Define Mongoose Schema and Model
+const messageSchema = new mongoose.Schema({
+  name: String,
+  message: String,
+  timestamp: { type: Date, default: Date.now },
+});
+
+const Message = mongoose.model("Message", messageSchema);
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// In-memory messages (will be replaced with MongoDB later)
-const messages = [];
-
 // POST route
-app.post("/api/message", (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "ursakta meg?" });
+app.post("/api/message", async (req, res) => {
+  const { name, message } = req.body;
+  if (!name || !message) {
+    return res
+      .status(400)
+      .json({ message: "Both name and message are required." });
   }
 
-  const newMessage = {
-    id: messages.length + 1,
-    name,
-    timestamp: new Date().toLocaleString(), // Add timestamp
-  };
-
-  messages.push(newMessage);
-  res
-    .status(201)
-    .json({ message: `Message from ${name} added!`, data: newMessage });
+  try {
+    const newMessage = new Message({ name, message });
+    await newMessage.save();
+    res
+      .status(201)
+      .json({ message: `Message from ${name} added!`, data: newMessage });
+  } catch (error) {
+    console.error("Error saving message:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 });
 
 // GET route
-app.get("/api/messages", (req, res) => {
-  res.status(200).json(messages);
+app.get("/api/messages", async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ timestamp: -1 });
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 });
 
 // Start the server
