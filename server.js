@@ -6,18 +6,18 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Corrected MongoDB URI
 const mongoURI =
   process.env.MONGODB_URI ||
   "mongodb+srv://kanottsh:logobombash@cluster0.yvvnn.mongodb.net/guestbook?retryWrites=true&w=majority&appName=Cluster0";
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB!");
-});
+mongoose
+  .connect(mongoURI)
+  .then(() => {
+    console.log("Connected to MongoDB!");
+  })
+  .catch((error) => {
+    console.error("MongoDB connection error:", error);
+  });
 
 const messageSchema = new mongoose.Schema({
   name: { type: String, required: true },
