@@ -10,8 +10,13 @@ const mongoURI =
   process.env.MONGODB_URI ||
   "mongodb+srv://kanottsh:logobombash@cluster0.yvvnn.mongodb.net/guestbook?retryWrites=true&w=majority&appName=Cluster0";
 
+// Log the MongoDB URI
 console.log("MongoDB URI:", mongoURI);
 
+// Set strict query mode
+mongoose.set("strictQuery", false); // Disable strict query mode
+
+// Connect to MongoDB
 mongoose
   .connect(mongoURI)
   .then(() => {
