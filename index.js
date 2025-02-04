@@ -36,26 +36,36 @@ document
   });
 
 async function fetchMessages() {
+  const messagesList = document.getElementById("messagesList");
+  messagesList.innerHTML = "<li>Loading messages...</li>";
+
   try {
     const response = await fetch("/api/messages");
     const messages = await response.json();
 
     console.log("Fetched messages:", messages);
 
-    const messagesList = document.getElementById("messagesList");
     messagesList.innerHTML = "";
 
     if (Array.isArray(messages)) {
       messages.forEach((msg) => {
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${msg.name}</strong><br><small>${new Date(msg.timestamp).toLocaleString()}</small>`; // Format timestamp
+        li.innerHTML = `<strong>${msg.name}</strong>: ${msg.message}<br><small>${
+          msg.timestamp
+            ? new Date(msg.timestamp).toLocaleString()
+            : "No timestamp available"
+        }</small>`;
         messagesList.appendChild(li);
       });
     } else {
       console.error("Expected an array, got:", messages);
+      messagesList.innerHTML =
+        "<li>Unexpected data format. Please try again later.</li>";
     }
   } catch (error) {
     console.error("Error fetching messages:", error);
+    messagesList.innerHTML =
+      "<li>Error loading messages. Please try again later.</li>";
   }
 }
 
