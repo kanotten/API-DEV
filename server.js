@@ -6,8 +6,10 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Corrected MongoDB URI
 const mongoURI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/guestbook";
+  process.env.MONGODB_URI ||
+  "mongodb+srv://kanottsh:logobombash@cluster0.yvvnn.mongodb.net/guestbook?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
