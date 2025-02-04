@@ -19,7 +19,8 @@ A Guestbook web application.
 3. **Setup Environment Variables:**
    Create a `.env` file and add your MongoDB URI:
    ```env
-   MONGODB_URI=mongodb://localhost:27017/guestbook
+   MONGODB_URI=mongodb+srv://your-username:your-password@cluster0.yvvnn.mongodb.net/guestbook?retryWrites=true&w=majority
+
    ```
 
 4. **Start the Server:**
